@@ -1,26 +1,34 @@
 package com.davidfb;
 
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Doctor implements DeAlta {
 
-    private UUID id;
+    private String id;
     private String nombre;
-    private Especialidad especialidad;
+    private String especialidad;
     private boolean administrador;
+    private String clave;
 
-    public Doctor(String name, Especialidad especialidad) {
-        this.id = UUID.randomUUID();
-        this.nombre = name;
-        this.especialidad = especialidad;
-        darDeAlta();
+    public Doctor() {
     }
 
-    public UUID getId() {
+    private Doctor(String name, Especialidad especialidad) {
+        this.id = UUID.randomUUID().toString();
+        this.nombre = name;
+        this.especialidad = especialidad.toString();
+    }
+
+    public String getId() {
         return id;
     }
 
-    public String getName() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
         return nombre;
     }
 
@@ -29,7 +37,11 @@ public class Doctor implements DeAlta {
     }
 
     public String getEspecialidad() {
-        return especialidad.toString();
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public boolean isAdministrador() {
@@ -38,11 +50,60 @@ public class Doctor implements DeAlta {
 
     @Override
     public String toString() {
-        return "El/La " + especialidad + " " + nombre;
+        return especialidad + " " + nombre;
     }
 
     @Override
-    public void darDeAlta() {
-        System.out.println(this + "ha sido dado de alta!");
+    public DeAlta darDeAlta() {
+        Scanner scanner = new Scanner(System.in);
+        String nombre;
+        int opcion;
+
+        System.out.print("Introduce el nombre del doctor/doctora: ");
+        nombre = scanner.nextLine();
+        Especialidad especialidad;
+        System.out.println("Elije la Especialidad");
+        for (int i = 0; i < Especialidad.values().length; i++) {
+            System.out.println((i + 1) + " - " + Especialidad.values()[i]);
+        }
+        try {
+            System.out.print("Introduce una opcion: ");
+            opcion = Integer.parseInt(scanner.nextLine());
+            especialidad = Especialidad.values()[opcion];
+        } catch (Exception e) {
+            System.out.println("Ocurrio un error, vuelve a intentar");
+            return darDeAlta();
+        }
+        Doctor nuevoDoctor = new Doctor(nombre, especialidad);
+        boolean repetir;
+        System.out.print("""
+                Este doctor tiene derechos de administrador?
+                1 - si
+                2 - no
+                Introduce opcion:\s""");
+        do {
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+                repetir = false;
+            } catch (Exception e) {
+                System.out.println("Opcion Invalida!");
+                repetir = true;
+            }
+        } while (repetir);
+
+        if (opcion == 1) {
+            nuevoDoctor.administrador = true;
+            System.out.print("Crea una clave: ");
+            nuevoDoctor.clave = scanner.nextLine();
+        } else {
+            nuevoDoctor.administrador = false;
+        }
+
+        System.out.println(nuevoDoctor + " ha sido dado de alta!");
+        return nuevoDoctor;
+    }
+
+    public String getClave() {
+        return clave;
     }
 }

@@ -1,15 +1,16 @@
 package com.davidfb;
 
-import java.util.Date;
-
 public class Cita {
     private Doctor doctor;
     private Paciente paciente;
-    private Date fecha;
+    private String fecha;
     private String motivo;
 
 
-    public Cita(Doctor doctor, Paciente paciente, Date fecha, String motivo) {
+    public Cita() {
+
+    }
+    public Cita(Doctor doctor, Paciente paciente, String fecha, String motivo) {
         this.doctor = doctor;
         this.paciente = paciente;
         this.fecha = fecha;
@@ -32,7 +33,7 @@ public class Cita {
         this.paciente = paciente;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
