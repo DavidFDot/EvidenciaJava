@@ -48,6 +48,14 @@ public class Doctor implements DeAlta {
         return administrador;
     }
 
+    public void setAdministrador(boolean administrador) {
+        this.administrador = administrador;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
     @Override
     public String toString() {
         return especialidad + " " + nombre;
@@ -69,7 +77,7 @@ public class Doctor implements DeAlta {
         try {
             System.out.print("Introduce una opcion: ");
             opcion = Integer.parseInt(scanner.nextLine());
-            especialidad = Especialidad.values()[opcion];
+            especialidad = Especialidad.values()[opcion - 1];
         } catch (Exception e) {
             System.out.println("Ocurrio un error, vuelve a intentar");
             return darDeAlta();
@@ -83,7 +91,7 @@ public class Doctor implements DeAlta {
                 Introduce opcion:\s""");
         do {
             try {
-                opcion = Integer.parseInt(scanner.nextLine());
+                opcion = (Integer.parseInt(scanner.nextLine()));
                 repetir = false;
             } catch (Exception e) {
                 System.out.println("Opcion Invalida!");

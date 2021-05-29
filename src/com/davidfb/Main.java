@@ -56,22 +56,28 @@ public class Main {
     }
 
     private static boolean identifiquese() {
-        if (pacientes.size() < 1) {
-            System.out.println("No hay parfiles, crea un Perfil");
-            darDeAltaDoctor();
-        }
-        System.out.println("Quien eres?");
-        listarDoctores();
-        System.out.print("Selecciona quien eres: ");
-        int opcion = Integer.parseInt(scanner.nextLine());
-        if (doctores.get(opcion - 1).isAdministrador()) {
-            System.out.print("Introduce la clave: ");
-            String clave = scanner.nextLine();
-            if (doctores.get(opcion - 1).getClave().equals(clave)) {
-                return true;
+
+        for (Doctor doctor :
+                doctores) {
+            if (doctor.isAdministrador()) {
+                System.out.println("Quien eres?");
+                listarDoctores();
+                System.out.print("Selecciona quien eres: ");
+                int opcion = Integer.parseInt(scanner.nextLine());
+                if (doctores.get(opcion - 1).isAdministrador()) {
+                    System.out.print("Introduce la clave: ");
+                    String clave = scanner.nextLine();
+                    if (doctores.get(opcion - 1).getClave().equals(clave)) {
+                        return true;
+                    }
+                }
             }
         }
-        return false;
+
+        System.out.println("No hay parfiles de Administradores, crea un Perfil");
+        darDeAltaDoctor();
+
+        return identifiquese();
     }
 
     private static void darDeAltaDoctor() {
@@ -158,7 +164,9 @@ public class Main {
                         for (Doctor doctor : doctores) {
                             writer.println(doctor.getId() + "," +
                                     doctor.getNombre() + "," +
-                                    doctor.getEspecialidad());
+                                    doctor.getEspecialidad() + "," +
+                                    doctor.isAdministrador() + "," +
+                                    doctor.getClave());
                         }
                         writer.close();
                         break;
@@ -195,56 +203,51 @@ public class Main {
                 switch (i) {
                     case 0:
                         bufferedReader = new BufferedReader(new FileReader(saveFiles[i]));
-                        String[] informacion = bufferedReader.readLine().split(",");
-                        do {
-                            String[] doctorInfo = informacion[0].split(" ");
+                        String informacionString;
+                        String[] informacionArray;
+                        ;
+                        while ((informacionString = bufferedReader.readLine()) != null) {
+                            informacionArray = informacionString.split(",");
+                            String[] doctorInfo = informacionArray[0].split(" ");
                             Doctor doctor = new Doctor();
                             doctor.setEspecialidad(doctorInfo[0]);
                             doctor.setName(doctorInfo[1]);
-                            String[] pacienteInfo = informacion[1].split(" ");
+                            String[] pacienteInfo = informacionArray[1].split(" ");
                             Paciente paciente = new Paciente();
                             paciente.setNombre(pacienteInfo[1]);
-                            Cita cita = new Cita(doctor, paciente, informacion[2], informacion[3]);
+                            Cita cita = new Cita(doctor, paciente, informacionArray[2], informacionArray[3]);
                             citas.add(cita);
-                            try {
-                                informacion = bufferedReader.readLine().split(",");
-                            } catch (Exception e) {
-                                break;
-                            }
-                        } while (true);
+                        }
                         bufferedReader.close();
                         break;
                     case 1:
                         bufferedReader = new BufferedReader(new FileReader(saveFiles[i]));
-                        String[] informacion2 = bufferedReader.readLine().split(",");
-                        do {
+                        String informacion2String;
+                        String[] informacion2Array;
+                        while ((informacion2String = bufferedReader.readLine()) != null &&
+                                !informacion2String.isEmpty()) {
+                            informacion2Array = informacion2String.split(",");
                             Doctor doctor = new Doctor();
-                            doctor.setId(informacion2[0]);
-                            doctor.setName(informacion2[1]);
-                            doctor.setEspecialidad(informacion2[2]);
+                            doctor.setId(informacion2Array[0]);
+                            doctor.setName(informacion2Array[1]);
+                            doctor.setEspecialidad(informacion2Array[2]);
+                            doctor.setAdministrador(Boolean.valueOf(informacion2Array[3]));
+                            doctor.setClave(informacion2Array[4]);
                             doctores.add(doctor);
-                            try {
-                                informacion = bufferedReader.readLine().split(",");
-                            } catch (Exception e) {
-                                break;
-                            }
-                        } while (true);
+                        }
                         bufferedReader.close();
                         break;
                     case 2:
                         bufferedReader = new BufferedReader(new FileReader(saveFiles[i]));
-                        String[] informacion3 = bufferedReader.readLine().split(",");
-                        do {
+                        String informacion3String;
+                        String[] informacion3Array;
+                        while ((informacion3String = bufferedReader.readLine()) != null) {
+                            informacion3Array = informacion3String.split(",");
                             Paciente paciente = new Paciente();
-                            paciente.setId(informacion3[0]);
-                            paciente.setNombre(informacion3[1]);
+                            paciente.setId(informacion3Array[0]);
+                            paciente.setNombre(informacion3Array[1]);
                             pacientes.add(paciente);
-                            try {
-                                informacion = bufferedReader.readLine().split(",");
-                            } catch (Exception e) {
-                                break;
-                            }
-                        } while (true);
+                        }
                         bufferedReader.close();
                         break;
                     default:
